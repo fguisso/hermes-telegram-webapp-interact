@@ -1,0 +1,71 @@
+<div class="ix-stack">
+  <header class="ix-stack-sm">
+    <span class="ix-badge">Revisão</span>
+    <h1>Tabela de preços — Setembro</h1>
+    <p class="ix-muted">Ajuste os novos preços, marque o que está aprovado e envie para o agente.</p>
+  </header>
+
+  <div class="ix-table-wrap">
+    <table class="ix-table">
+      <thead>
+        <tr><th>Produto</th><th>Atual</th><th>Novo</th><th>OK</th></tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+
+  <div class="ix-card ix-row ix-between">
+    <span class="ix-muted">Variação média</span>
+    <strong class="ix-num" id="delta">—</strong>
+  </div>
+
+  <div class="ix-stack-sm">
+    <span class="ix-muted">Vigência</span>
+    <div class="ix-row">
+      <button class="ix-chip" data-set="effective" data-value="&quot;now&quot;">Imediata</button>
+      <button class="ix-chip" data-set="effective" data-value="&quot;next_month&quot;">Próximo mês</button>
+    </div>
+    <p class="ix-muted" data-show-if="effective=next_month">Os clientes atuais serão avisados com 30 dias.</p>
+  </div>
+
+  <label class="ix-field">Observações
+    <textarea data-bind="notes" rows="3" placeholder="Algo que o agente precisa saber?"></textarea>
+  </label>
+
+  <div class="ix-row">
+    <button class="ix-btn ix-secondary" data-action="request_changes">Pedir ajustes</button>
+    <button class="ix-btn" data-action="approve" data-confirm="Enviar a tabela aprovada?">Aprovar</button>
+  </div>
+  <p class="ix-muted" data-interact-status></p>
+</div>
+
+<script>
+  (function () {
+    function esc(value) {
+      return String(value).replace(/[&<>"]/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+      });
+    }
+
+    var rows = Interact.get("rows") || [];
+    document.getElementById("rows").innerHTML = rows.map(function (row, i) {
+      return "<tr>" +
+        "<td>" + esc(row.product) + "</td>" +
+        '<td class="ix-num" data-bind="rows.' + i + '.current" data-format="currency"></td>' +
+        '<td><input type="number" step="0.01" inputmode="decimal" data-bind="rows.' + i + '.price"></td>' +
+        '<td><input type="checkbox" data-bind="rows.' + i + '.approved"></td>' +
+        "</tr>";
+    }).join("");
+
+    function refresh(state) {
+      var list = (state.rows || []).filter(function (r) { return r.current; });
+      var avg = list.length
+        ? list.reduce(function (sum, r) { return sum + (r.price - r.current) / r.current; }, 0) / list.length
+        : 0;
+      document.getElementById("delta").textContent = (avg >= 0 ? "+" : "") + (avg * 100).toFixed(1) + "%";
+    }
+
+    Interact.onChange(refresh);
+    refresh(Interact.get());
+  })();
+</script>

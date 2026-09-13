@@ -1,0 +1,14 @@
+[project]
+name = "hermes-interact"
+version = "0.2.0"
+description = "PluginInteract: agent-built static Telegram Mini App pages for Hermes Agent"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=8", "python-telegram-bot>=21"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

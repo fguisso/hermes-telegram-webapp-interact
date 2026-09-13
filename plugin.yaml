@@ -1,0 +1,22 @@
+name: interact
+version: 0.2.0
+description: >
+  PluginInteract — the agent builds a small static interactive page (review a table, pick
+  options, fill a form, approve items), deploys it (pipa or any deploy command) and sends it
+  as a Telegram Mini App keyboard button. The page keeps its state in localStorage and the
+  final button sends the result back through the bot, which injects it into the conversation.
+author: fguisso
+kind: standalone
+homepage: https://github.com/fguisso/hermes-telegram-webapp-interact
+tags:
+  - telegram
+  - mini-app
+  - webapp
+  - generative-ui
+  - pipa
+provides_tools:
+  - interact_create
+  - interact_update
+  - interact_get_state
+  - interact_close
+  - interact_list
